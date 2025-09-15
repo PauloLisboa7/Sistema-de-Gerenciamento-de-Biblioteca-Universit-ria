@@ -1,64 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Biblioteca Universitária</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Biblioteca Universitária</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="container mx-auto">
-        <h1 class="text-3xl font-bold mb-6">Sistema de Gerenciamento de Biblioteca Universitária</h1>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">Sistema de Gerenciamento de Biblioteca Universitária</h1>
 
-        <section>
-            <h2 class="text-2xl font-semibold mb-4">Livros</h2>
-            <button id="btnAdicionarLivro" class="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Adicionar Livro</button>
-            <table class="min-w-full bg-white rounded shadow">
-                <thead>
-                    <tr>
-                        <th class="py-2 px-4 border-b">Título</th>
-                        <th class="py-2 px-4 border-b">Autor</th>
-                        <th class="py-2 px-4 border-b">Ano</th>
-                        <th class="py-2 px-4 border-b">ISBN</th>
-                        <th class="py-2 px-4 border-b">Disponível</th>
-                        <th class="py-2 px-4 border-b">Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaLivrosBody"></tbody>
-            </table>
-        </section>
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Livros Cadastrados</h2>
+            <button id="addBookBtn" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Adicionar Livro</button>
+            <div id="booksList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Livros serão carregados aqui -->
+            </div>
+        </div>
 
         <!-- Modal para adicionar/editar livro -->
-        <div id="modalLivro" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white p-6 rounded shadow w-96">
-                <h3 id="modalTitulo" class="text-xl font-semibold mb-4">Adicionar Livro</h3>
-                <form id="formLivro" class="space-y-4">
-                    <input type="hidden" id="livroId" />
-                    <div>
-                        <label for="titulo" class="block font-medium">Título</label>
-                        <input type="text" id="titulo" class="w-full border rounded px-3 py-2" required />
+        <div id="bookModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded shadow-lg w-96">
+                <h3 id="modalTitle" class="text-xl font-semibold mb-4">Adicionar Livro</h3>
+                <form id="bookForm">
+                    <input type="hidden" id="bookId">
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Título</label>
+                        <input type="text" id="titulo" class="w-full px-3 py-2 border rounded" required>
                     </div>
-                    <div>
-                        <label for="autor" class="block font-medium">Autor</label>
-                        <input type="text" id="autor" class="w-full border rounded px-3 py-2" required />
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Autor</label>
+                        <input type="text" id="autor" class="w-full px-3 py-2 border rounded" required>
                     </div>
-                    <div>
-                        <label for="anoPublicacao" class="block font-medium">Ano de Publicação</label>
-                        <input type="number" id="anoPublicacao" class="w-full border rounded px-3 py-2" required />
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Ano de Publicação</label>
+                        <input type="number" id="anoPublicacao" class="w-full px-3 py-2 border rounded" required>
                     </div>
-                    <div>
-                        <label for="isbn" class="block font-medium">ISBN</label>
-                        <input type="text" id="isbn" class="w-full border rounded px-3 py-2" required />
+                    <div class="mb-4">
+                        <label class="block text-gray-700">ISBN</label>
+                        <input type="text" id="isbn" class="w-full px-3 py-2 border rounded" required>
                     </div>
-                    <div>
-                        <label for="disponivel" class="inline-flex items-center">
-                            <input type="checkbox" id="disponivel" class="mr-2" checked />
-                            Disponível
-                        </label>
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Disponibilidade</label>
+                        <select id="disponivel" class="w-full px-3 py-2 border rounded">
+                            <option value="true">Disponível</option>
+                            <option value="false">Emprestado</option>
+                        </select>
                     </div>
-                    <div class="flex justify-end space-x-2">
-                        <button type="button" id="btnCancelar" class="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">Cancelar</button>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Salvar</button>
+                    <div class="flex justify-end">
+                        <button type="button" id="cancelBtn" class="mr-2 px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Salvar</button>
                     </div>
                 </form>
             </div>
@@ -66,122 +57,128 @@
     </div>
 
     <script>
-        const apiUrl = '/api/livros';
+        const API_BASE = 'http://localhost:8080/api';
+        let editingBookId = null;
 
-        async function listarLivros() {
-            const response = await fetch(apiUrl);
-            const livros = await response.json();
-            const tbody = document.getElementById('tabelaLivrosBody');
-            tbody.innerHTML = '';
-            livros.forEach(livro => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="border px-4 py-2">${livro.titulo}</td>
-                    <td class="border px-4 py-2">${livro.autor}</td>
-                    <td class="border px-4 py-2">${livro.anoPublicacao}</td>
-                    <td class="border px-4 py-2">${livro.isbn}</td>
-                    <td class="border px-4 py-2 text-center">${livro.disponivel ? 'Sim' : 'Não'}</td>
-                    <td class="border px-4 py-2 text-center space-x-2">
-                        <button class="bg-yellow-400 px-2 py-1 rounded" onclick="editarLivro(${livro.id})">Editar</button>
-                        <button class="bg-red-600 text-white px-2 py-1 rounded" onclick="removerLivro(${livro.id})">Remover</button>
-                    </td>
+        // Carregar livros
+        async function loadBooks() {
+            try {
+                const response = await fetch(`${API_BASE}/livros`);
+                const books = await response.json();
+                displayBooks(books);
+            } catch (error) {
+                console.error('Erro ao carregar livros:', error);
+            }
+        }
+
+        // Exibir livros
+        function displayBooks(books) {
+            const booksList = document.getElementById('booksList');
+            booksList.innerHTML = '';
+            books.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'bg-white p-4 rounded shadow';
+                bookCard.innerHTML = `
+                    <h3 class="font-semibold">${book.titulo}</h3>
+                    <p>Autor: ${book.autor}</p>
+                    <p>Ano: ${book.anoPublicacao}</p>
+                    <p>ISBN: ${book.isbn}</p>
+                    <p>Status: ${book.disponivel ? 'Disponível' : 'Emprestado'}</p>
+                    <div class="mt-2">
+                        <button onclick="editBook(${book.id})" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Editar</button>
+                        <button onclick="deleteBook(${book.id})" class="bg-red-500 text-white px-2 py-1 rounded">Remover</button>
+                    </div>
                 `;
-                tbody.appendChild(tr);
+                booksList.appendChild(bookCard);
             });
         }
 
-        function abrirModal() {
-            document.getElementById('modalLivro').classList.remove('hidden');
-        }
-
-        function fecharModal() {
-            document.getElementById('modalLivro').classList.add('hidden');
-            document.getElementById('formLivro').reset();
-            document.getElementById('livroId').value = '';
-            document.getElementById('disponivel').checked = true;
-            document.getElementById('modalTitulo').textContent = 'Adicionar Livro';
-        }
-
-        document.getElementById('btnAdicionarLivro').addEventListener('click', () => {
-            abrirModal();
+        // Adicionar livro
+        document.getElementById('addBookBtn').addEventListener('click', () => {
+            editingBookId = null;
+            document.getElementById('modalTitle').textContent = 'Adicionar Livro';
+            document.getElementById('bookForm').reset();
+            document.getElementById('bookModal').classList.remove('hidden');
         });
 
-        document.getElementById('btnCancelar').addEventListener('click', () => {
-            fecharModal();
-        });
+        // Editar livro
+        async function editBook(id) {
+            try {
+                const response = await fetch(`${API_BASE}/livros/${id}`);
+                const book = await response.json();
+                editingBookId = id;
+                document.getElementById('modalTitle').textContent = 'Editar Livro';
+                document.getElementById('titulo').value = book.titulo;
+                document.getElementById('autor').value = book.autor;
+                document.getElementById('anoPublicacao').value = book.anoPublicacao;
+                document.getElementById('isbn').value = book.isbn;
+                document.getElementById('disponivel').value = book.disponivel.toString();
+                document.getElementById('bookModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('Erro ao carregar livro:', error);
+            }
+        }
 
-        document.getElementById('formLivro').addEventListener('submit', async (e) => {
+        // Salvar livro
+        document.getElementById('bookForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const id = document.getElementById('livroId').value;
-            const livro = {
+            const book = {
                 titulo: document.getElementById('titulo').value,
                 autor: document.getElementById('autor').value,
                 anoPublicacao: parseInt(document.getElementById('anoPublicacao').value),
                 isbn: document.getElementById('isbn').value,
-                disponivel: document.getElementById('disponivel').checked
+                disponivel: document.getElementById('disponivel').value === 'true'
             };
 
-            if (id) {
-                // Atualizar
-                const response = await fetch(`${apiUrl}/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(livro)
-                });
-                if (response.ok) {
-                    fecharModal();
-                    listarLivros();
+            try {
+                let response;
+                if (editingBookId) {
+                    response = await fetch(`${API_BASE}/livros/${editingBookId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(book)
+                    });
                 } else {
-                    alert('Erro ao atualizar livro');
+                    response = await fetch(`${API_BASE}/livros`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(book)
+                    });
                 }
-            } else {
-                // Criar
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(livro)
-                });
                 if (response.ok) {
-                    fecharModal();
-                    listarLivros();
+                    document.getElementById('bookModal').classList.add('hidden');
+                    loadBooks();
                 } else {
-                    alert('Erro ao adicionar livro');
+                    console.error('Erro ao salvar livro');
                 }
+            } catch (error) {
+                console.error('Erro ao salvar livro:', error);
             }
         });
 
-        async function editarLivro(id) {
-            const response = await fetch(`${apiUrl}/${id}`);
-            if (response.ok) {
-                const livro = await response.json();
-                document.getElementById('livroId').value = livro.id;
-                document.getElementById('titulo').value = livro.titulo;
-                document.getElementById('autor').value = livro.autor;
-                document.getElementById('anoPublicacao').value = livro.anoPublicacao;
-                document.getElementById('isbn').value = livro.isbn;
-                document.getElementById('disponivel').checked = livro.disponivel;
-                document.getElementById('modalTitulo').textContent = 'Editar Livro';
-                abrirModal();
-            } else {
-                alert('Livro não encontrado');
-            }
-        }
-
-        async function removerLivro(id) {
+        // Remover livro
+        async function deleteBook(id) {
             if (confirm('Tem certeza que deseja remover este livro?')) {
-                const response = await fetch(`${apiUrl}/${id}`, {
-                    method: 'DELETE'
-                });
-                if (response.ok) {
-                    listarLivros();
-                } else {
-                    alert('Erro ao remover livro');
+                try {
+                    const response = await fetch(`${API_BASE}/livros/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        loadBooks();
+                    } else {
+                        console.error('Erro ao remover livro');
+                    }
+                } catch (error) {
+                    console.error('Erro ao remover livro:', error);
                 }
             }
         }
 
-        // Inicializa a lista de livros ao carregar a página
-        listarLivros();
+        // Cancelar modal
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            document.getElementById('bookModal').classList.add('hidden');
+        });
+
+        // Carregar livros ao iniciar
+        loadBooks();
     </script>
 </body>
 </html>
