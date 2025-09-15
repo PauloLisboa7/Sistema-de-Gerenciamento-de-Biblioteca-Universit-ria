@@ -49,7 +49,7 @@ public class EmprestimoService {
         return null;
     }
 
-    public Emprestimo emprestarLivro(Long usuarioId, Long livroId) {
+    public Emprestimo createEmprestimo(Long usuarioId, Long livroId) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
         Optional<Livro> livroOpt = livroRepository.findById(livroId);
 
@@ -60,6 +60,24 @@ public class EmprestimoService {
                 livroRepository.save(livro);
 
                 Emprestimo emprestimo = new Emprestimo(usuarioOpt.get(), livro, LocalDate.now());
+                return emprestimoRepository.save(emprestimo);
+            }
+        }
+        return null;
+    }
+
+    public Emprestimo updateEmprestimo(Long id, Integer usuarioId, Integer livroId, String dataDevolucaoStr) {
+        Optional<Emprestimo> emprestimoOpt = emprestimoRepository.findById(id);
+        if (emprestimoOpt.isPresent()) {
+            Emprestimo emprestimo = emprestimoOpt.get();
+            Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId.longValue());
+            Optional<Livro> livroOpt = livroRepository.findById(livroId.longValue());
+            if (usuarioOpt.isPresent() && livroOpt.isPresent()) {
+                emprestimo.setUsuario(usuarioOpt.get());
+                emprestimo.setLivro(livroOpt.get());
+                if (dataDevolucaoStr != null) {
+                    emprestimo.setDataDevolucao(LocalDate.parse(dataDevolucaoStr));
+                }
                 return emprestimoRepository.save(emprestimo);
             }
         }

@@ -29,13 +29,18 @@ public class EmprestimoController {
     }
 
     @PostMapping
-    public Emprestimo salvar(@RequestBody Emprestimo emprestimo) {
-        return emprestimoService.salvar(emprestimo);
+    public Emprestimo salvar(@RequestBody java.util.Map<String, Integer> request) {
+        int usuarioId = request.get("usuarioId");
+        int livroId = request.get("livroId");
+        return emprestimoService.createEmprestimo((long)usuarioId, (long)livroId);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Emprestimo> atualizar(@PathVariable Long id, @RequestBody Emprestimo emprestimo) {
-        Emprestimo atualizado = emprestimoService.atualizar(id, emprestimo);
+    public ResponseEntity<Emprestimo> atualizar(@PathVariable Long id, @RequestBody java.util.Map<String, Object> request) {
+        int usuarioId = (Integer) request.get("usuarioId");
+        int livroId = (Integer) request.get("livroId");
+        String dataDevolucaoStr = (String) request.get("dataDevolucao");
+        Emprestimo atualizado = emprestimoService.updateEmprestimo(id, usuarioId, livroId, dataDevolucaoStr);
         return atualizado != null ? ResponseEntity.ok(atualizado) : ResponseEntity.notFound().build();
     }
 
