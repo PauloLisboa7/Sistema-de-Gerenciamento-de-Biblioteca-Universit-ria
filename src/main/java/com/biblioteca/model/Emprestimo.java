@@ -1,5 +1,6 @@
 package com.biblioteca.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,10 +18,12 @@ public class Emprestimo {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonBackReference(value = "usuario-emprestimos")
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "livro_id")
+    @JsonBackReference(value = "livro-emprestimos")
     private Livro livro;
 
     private LocalDate dataEmprestimo;

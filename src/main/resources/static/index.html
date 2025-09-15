@@ -1,55 +1,155 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Sistema de Gerenciamento de Biblioteca Universitária</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold text-center mb-8">Sistema de Gerenciamento de Biblioteca Universitária</h1>
+<body class="bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 min-h-screen p-8">
+    <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <h1 class="text-4xl font-extrabold text-center text-indigo-700 mb-10 drop-shadow-md">
+            Sistema de Gerenciamento de Biblioteca Universitária
+        </h1>
 
-        <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Livros Cadastrados</h2>
-            <button id="addBookBtn" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Adicionar Livro</button>
-            <div id="booksList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Livros serão carregados aqui -->
-            </div>
-        </div>
+        <!-- Seção Livros -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-indigo-300 pb-2">
+                Livros Cadastrados
+            </h2>
+            <button id="addBookBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Adicionar Livro
+            </button>
+            <div id="booksList" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
 
-        <!-- Modal para adicionar/editar livro -->
-        <div id="bookModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white p-6 rounded shadow-lg w-96">
-                <h3 id="modalTitle" class="text-xl font-semibold mb-4">Adicionar Livro</h3>
-                <form id="bookForm">
-                    <input type="hidden" id="bookId">
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Título</label>
-                        <input type="text" id="titulo" class="w-full px-3 py-2 border rounded" required>
+        <!-- Seção Usuários -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-purple-300 pb-2">
+                Usuários Cadastrados
+            </h2>
+            <button id="addUserBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                Adicionar Usuário
+            </button>
+            <div id="usersList" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- Seção Empréstimos -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-pink-300 pb-2">
+                Empréstimos Registrados
+            </h2>
+            <button id="addLoanBtn" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2">
+                Registrar Empréstimo
+            </button>
+            <div id="loansList" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- Modal Livro -->
+        <div id="bookModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-8 relative">
+                <button id="closeBookModalBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Fechar modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 id="modalBookTitle" class="text-2xl font-bold text-indigo-700 mb-6">Adicionar Livro</h3>
+                <form id="bookForm" class="space-y-5">
+                    <input type="hidden" id="bookId" />
+                    <div>
+                        <label for="titulo" class="block text-gray-700 font-semibold mb-1">Título</label>
+                        <input type="text" id="titulo" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Autor</label>
-                        <input type="text" id="autor" class="w-full px-3 py-2 border rounded" required>
+                    <div>
+                        <label for="autor" class="block text-gray-700 font-semibold mb-1">Autor</label>
+                        <input type="text" id="autor" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Ano de Publicação</label>
-                        <input type="number" id="anoPublicacao" class="w-full px-3 py-2 border rounded" required>
+                    <div>
+                        <label for="anoPublicacao" class="block text-gray-700 font-semibold mb-1">Ano de Publicação</label>
+                        <input type="number" id="anoPublicacao" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700">ISBN</label>
-                        <input type="text" id="isbn" class="w-full px-3 py-2 border rounded" required>
+                    <div>
+                        <label for="isbn" class="block text-gray-700 font-semibold mb-1">ISBN</label>
+                        <input type="text" id="isbn" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Disponibilidade</label>
-                        <select id="disponivel" class="w-full px-3 py-2 border rounded">
+                    <div>
+                        <label for="disponivel" class="block text-gray-700 font-semibold mb-1">Disponibilidade</label>
+                        <select id="disponivel" class="w-full border border-gray-300 rounded-md px-4 py-2">
                             <option value="true">Disponível</option>
                             <option value="false">Emprestado</option>
                         </select>
                     </div>
-                    <div class="flex justify-end">
-                        <button type="button" id="cancelBtn" class="mr-2 px-4 py-2 bg-gray-300 rounded">Cancelar</button>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Salvar</button>
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelBookBtn" class="px-5 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition">Cancelar</button>
+                        <button type="submit" class="px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Usuário -->
+        <div id="userModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-8 relative">
+                <button id="closeUserModalBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Fechar modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 id="modalUserTitle" class="text-2xl font-bold text-purple-700 mb-6">Adicionar Usuário</h3>
+                <form id="userForm" class="space-y-5">
+                    <input type="hidden" id="userId" />
+                    <div>
+                        <label for="nome" class="block text-gray-700 font-semibold mb-1">Nome</label>
+                        <input type="text" id="nome" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
+                    </div>
+                    <div>
+                        <label for="matricula" class="block text-gray-700 font-semibold mb-1">Matrícula</label>
+                        <input type="text" id="matricula" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
+                    </div>
+                    <div>
+                        <label for="curso" class="block text-gray-700 font-semibold mb-1">Curso</label>
+                        <input type="text" id="curso" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 font-semibold mb-1">E-mail</label>
+                        <input type="email" id="email" class="w-full border border-gray-300 rounded-md px-4 py-2" required />
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelUserBtn" class="px-5 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition">Cancelar</button>
+                        <button type="submit" class="px-5 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Empréstimo -->
+        <div id="loanModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-8 relative">
+                <button id="closeLoanModalBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none" aria-label="Fechar modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 id="modalLoanTitle" class="text-2xl font-bold text-pink-700 mb-6">Registrar Empréstimo</h3>
+                <form id="loanForm" class="space-y-5">
+                    <input type="hidden" id="loanId" />
+                    <div>
+                        <label for="usuarioId" class="block text-gray-700 font-semibold mb-1">Usuário</label>
+                        <select id="usuarioId" class="w-full border border-gray-300 rounded-md px-4 py-2" required></select>
+                    </div>
+                    <div>
+                        <label for="livroId" class="block text-gray-700 font-semibold mb-1">Livro</label>
+                        <select id="livroId" class="w-full border border-gray-300 rounded-md px-4 py-2" required></select>
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelLoanBtn" class="px-5 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition">Cancelar</button>
+                        <button type="submit" class="px-5 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition">Salvar</button>
                     </div>
                 </form>
             </div>
@@ -58,9 +158,9 @@
 
     <script>
         const API_BASE = 'http://localhost:8080/api';
-        let editingBookId = null;
 
-        // Carregar livros
+        // --- Livros ---
+        let editingBookId = null;
         async function loadBooks() {
             try {
                 const response = await fetch(`${API_BASE}/livros`);
@@ -70,44 +170,48 @@
                 console.error('Erro ao carregar livros:', error);
             }
         }
-
-        // Exibir livros
         function displayBooks(books) {
             const booksList = document.getElementById('booksList');
             booksList.innerHTML = '';
             books.forEach(book => {
                 const bookCard = document.createElement('div');
-                bookCard.className = 'bg-white p-4 rounded shadow';
+                bookCard.className = 'bg-indigo-50 rounded-lg shadow-md p-5 flex flex-col justify-between';
                 bookCard.innerHTML = `
-                    <h3 class="font-semibold">${book.titulo}</h3>
-                    <p>Autor: ${book.autor}</p>
-                    <p>Ano: ${book.anoPublicacao}</p>
-                    <p>ISBN: ${book.isbn}</p>
-                    <p>Status: ${book.disponivel ? 'Disponível' : 'Emprestado'}</p>
-                    <div class="mt-2">
-                        <button onclick="editBook(${book.id})" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Editar</button>
-                        <button onclick="deleteBook(${book.id})" class="bg-red-500 text-white px-2 py-1 rounded">Remover</button>
+                    <div>
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-2">${book.titulo}</h3>
+                        <p class="text-gray-700"><span class="font-semibold">Autor:</span> ${book.autor}</p>
+                        <p class="text-gray-700"><span class="font-semibold">Ano:</span> ${book.anoPublicacao}</p>
+                        <p class="text-gray-700"><span class="font-semibold">ISBN:</span> ${book.isbn}</p>
+                        <p class="mt-2 font-semibold ${book.disponivel ? 'text-green-600' : 'text-red-600'}">
+                            ${book.disponivel ? 'Disponível' : 'Emprestado'}
+                        </p>
+                    </div>
+                    <div class="mt-4 flex space-x-3">
+                        <button onclick="editBook(${book.id})" class="flex-1 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md shadow-md transition">Editar</button>
+                        <button onclick="deleteBook(${book.id})" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md shadow-md transition">Remover</button>
                     </div>
                 `;
                 booksList.appendChild(bookCard);
             });
         }
-
-        // Adicionar livro
         document.getElementById('addBookBtn').addEventListener('click', () => {
             editingBookId = null;
-            document.getElementById('modalTitle').textContent = 'Adicionar Livro';
+            document.getElementById('modalBookTitle').textContent = 'Adicionar Livro';
             document.getElementById('bookForm').reset();
             document.getElementById('bookModal').classList.remove('hidden');
         });
-
-        // Editar livro
+        document.getElementById('cancelBookBtn').addEventListener('click', () => {
+            document.getElementById('bookModal').classList.add('hidden');
+        });
+        document.getElementById('closeBookModalBtn').addEventListener('click', () => {
+            document.getElementById('bookModal').classList.add('hidden');
+        });
         async function editBook(id) {
             try {
                 const response = await fetch(`${API_BASE}/livros/${id}`);
                 const book = await response.json();
                 editingBookId = id;
-                document.getElementById('modalTitle').textContent = 'Editar Livro';
+                document.getElementById('modalBookTitle').textContent = 'Editar Livro';
                 document.getElementById('titulo').value = book.titulo;
                 document.getElementById('autor').value = book.autor;
                 document.getElementById('anoPublicacao').value = book.anoPublicacao;
@@ -118,8 +222,6 @@
                 console.error('Erro ao carregar livro:', error);
             }
         }
-
-        // Salvar livro
         document.getElementById('bookForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const book = {
@@ -129,7 +231,6 @@
                 isbn: document.getElementById('isbn').value,
                 disponivel: document.getElementById('disponivel').value === 'true'
             };
-
             try {
                 let response;
                 if (editingBookId) {
@@ -155,8 +256,6 @@
                 console.error('Erro ao salvar livro:', error);
             }
         });
-
-        // Remover livro
         async function deleteBook(id) {
             if (confirm('Tem certeza que deseja remover este livro?')) {
                 try {
@@ -171,14 +270,260 @@
                 }
             }
         }
-
-        // Cancelar modal
-        document.getElementById('cancelBtn').addEventListener('click', () => {
-            document.getElementById('bookModal').classList.add('hidden');
-        });
-
-        // Carregar livros ao iniciar
         loadBooks();
+
+        // --- Usuários ---
+        let editingUserId = null;
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/usuarios`);
+                const users = await response.json();
+                displayUsers(users);
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+            }
+        }
+        function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+            users.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'bg-purple-50 rounded-lg shadow-md p-5 flex flex-col justify-between';
+                userCard.innerHTML = `
+                    <div>
+                        <h3 class="text-xl font-semibold text-purple-700 mb-2">${user.nome}</h3>
+                        <p class="text-gray-700"><span class="font-semibold">Matrícula:</span> ${user.matricula}</p>
+                        <p class="text-gray-700"><span class="font-semibold">Curso:</span> ${user.curso}</p>
+                        <p class="text-gray-700"><span class="font-semibold">E-mail:</span> ${user.email}</p>
+                    </div>
+                    <div class="mt-4 flex space-x-3">
+                        <button onclick="editUser(${user.id})" class="flex-1 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md shadow-md transition">Editar</button>
+                        <button onclick="deleteUser(${user.id})" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md shadow-md transition">Remover</button>
+                    </div>
+                `;
+                usersList.appendChild(userCard);
+            });
+        }
+        document.getElementById('addUserBtn').addEventListener('click', () => {
+            editingUserId = null;
+            document.getElementById('modalUserTitle').textContent = 'Adicionar Usuário';
+            document.getElementById('userForm').reset();
+            document.getElementById('userModal').classList.remove('hidden');
+        });
+        document.getElementById('cancelUserBtn').addEventListener('click', () => {
+            document.getElementById('userModal').classList.add('hidden');
+        });
+        document.getElementById('closeUserModalBtn').addEventListener('click', () => {
+            document.getElementById('userModal').classList.add('hidden');
+        });
+        async function editUser(id) {
+            try {
+                const response = await fetch(`${API_BASE}/usuarios/${id}`);
+                const user = await response.json();
+                editingUserId = id;
+                document.getElementById('modalUserTitle').textContent = 'Editar Usuário';
+                document.getElementById('nome').value = user.nome;
+                document.getElementById('matricula').value = user.matricula;
+                document.getElementById('curso').value = user.curso;
+                document.getElementById('email').value = user.email;
+                document.getElementById('userModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('Erro ao carregar usuário:', error);
+            }
+        }
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = {
+                nome: document.getElementById('nome').value,
+                matricula: document.getElementById('matricula').value,
+                curso: document.getElementById('curso').value,
+                email: document.getElementById('email').value
+            };
+            try {
+                let response;
+                if (editingUserId) {
+                    response = await fetch(`${API_BASE}/usuarios/${editingUserId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(user)
+                    });
+                } else {
+                    response = await fetch(`${API_BASE}/usuarios`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(user)
+                    });
+                }
+                if (response.ok) {
+                    document.getElementById('userModal').classList.add('hidden');
+                    loadUsers();
+                } else {
+                    console.error('Erro ao salvar usuário');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar usuário:', error);
+            }
+        });
+        async function deleteUser(id) {
+            if (confirm('Tem certeza que deseja remover este usuário?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/usuarios/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        loadUsers();
+                    } else {
+                        console.error('Erro ao remover usuário');
+                    }
+                } catch (error) {
+                    console.error('Erro ao remover usuário:', error);
+                }
+            }
+        }
+        loadUsers();
+
+        // --- Empréstimos ---
+        let editingLoanId = null;
+        async function loadLoans() {
+            try {
+                const response = await fetch(`${API_BASE}/emprestimos`);
+                const loans = await response.json();
+                displayLoans(loans);
+            } catch (error) {
+                console.error('Erro ao carregar empréstimos:', error);
+            }
+        }
+        function displayLoans(loans) {
+            const loansList = document.getElementById('loansList');
+            loansList.innerHTML = '';
+            loans.forEach(loan => {
+                const loanCard = document.createElement('div');
+                loanCard.className = 'bg-pink-50 rounded-lg shadow-md p-5 flex flex-col justify-between';
+                loanCard.innerHTML = `
+                    <div>
+                        <p class="text-gray-700"><span class="font-semibold">Usuário:</span> ${loan.usuario.nome}</p>
+                        <p class="text-gray-700"><span class="font-semibold">Livro:</span> ${loan.livro.titulo}</p>
+                        <p class="text-gray-700"><span class="font-semibold">Data do Empréstimo:</span> ${new Date(loan.dataEmprestimo).toLocaleDateString()}</p>
+                        <p class="text-gray-700"><span class="font-semibold">Data da Devolução:</span> ${loan.dataDevolucao ? new Date(loan.dataDevolucao).toLocaleDateString() : 'Não devolvido'}</p>
+                    </div>
+                    <div class="mt-4 flex space-x-3">
+                        <button onclick="editLoan(${loan.id})" class="flex-1 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md shadow-md transition">Editar</button>
+                        <button onclick="deleteLoan(${loan.id})" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-md shadow-md transition">Remover</button>
+                    </div>
+                `;
+                loansList.appendChild(loanCard);
+            });
+        }
+        document.getElementById('addLoanBtn').addEventListener('click', async () => {
+            editingLoanId = null;
+            document.getElementById('modalLoanTitle').textContent = 'Registrar Empréstimo';
+            document.getElementById('loanForm').reset();
+            // Carregar usuários e livros para selects
+            await loadUsersForLoan();
+            await loadBooksForLoan();
+            document.getElementById('loanModal').classList.remove('hidden');
+        });
+        document.getElementById('cancelLoanBtn').addEventListener('click', () => {
+            document.getElementById('loanModal').classList.add('hidden');
+        });
+        document.getElementById('closeLoanModalBtn').addEventListener('click', () => {
+            document.getElementById('loanModal').classList.add('hidden');
+        });
+        async function loadUsersForLoan() {
+            try {
+                const response = await fetch(`${API_BASE}/usuarios`);
+                const users = await response.json();
+                const userSelect = document.getElementById('usuarioId');
+                userSelect.innerHTML = '';
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.nome;
+                    userSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar usuários para empréstimo:', error);
+            }
+        }
+        async function loadBooksForLoan() {
+            try {
+                const response = await fetch(`${API_BASE}/livros`);
+                const books = await response.json();
+                const bookSelect = document.getElementById('livroId');
+                bookSelect.innerHTML = '';
+                books.forEach(book => {
+                    if (book.disponivel) {
+                        const option = document.createElement('option');
+                        option.value = book.id;
+                        option.textContent = book.titulo;
+                        bookSelect.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar livros para empréstimo:', error);
+            }
+        }
+        async function editLoan(id) {
+            try {
+                const response = await fetch(`${API_BASE}/emprestimos/${id}`);
+                const loan = await response.json();
+                editingLoanId = id;
+                document.getElementById('modalLoanTitle').textContent = 'Editar Empréstimo';
+                await loadUsersForLoan();
+                await loadBooksForLoan();
+                document.getElementById('usuarioId').value = loan.usuario.id;
+                document.getElementById('livroId').value = loan.livro.id;
+                document.getElementById('loanModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('Erro ao carregar empréstimo:', error);
+            }
+        }
+        document.getElementById('loanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loan = {
+                usuarioId: parseInt(document.getElementById('usuarioId').value),
+                livroId: parseInt(document.getElementById('livroId').value)
+            };
+            try {
+                let response;
+                if (editingLoanId) {
+                    response = await fetch(`${API_BASE}/emprestimos/${editingLoanId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(loan)
+                    });
+                } else {
+                    response = await fetch(`${API_BASE}/emprestimos`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(loan)
+                    });
+                }
+                if (response.ok) {
+                    document.getElementById('loanModal').classList.add('hidden');
+                    loadLoans();
+                    loadBooks(); // Atualiza disponibilidade dos livros
+                } else {
+                    console.error('Erro ao salvar empréstimo');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar empréstimo:', error);
+            }
+        });
+        async function deleteLoan(id) {
+            if (confirm('Tem certeza que deseja remover este empréstimo?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/emprestimos/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        loadLoans();
+                        loadBooks(); // Atualiza disponibilidade dos livros
+                    } else {
+                        console.error('Erro ao remover empréstimo');
+                    }
+                } catch (error) {
+                    console.error('Erro ao remover empréstimo:', error);
+                }
+            }
+        }
+        loadLoans();
     </script>
 </body>
 </html>
