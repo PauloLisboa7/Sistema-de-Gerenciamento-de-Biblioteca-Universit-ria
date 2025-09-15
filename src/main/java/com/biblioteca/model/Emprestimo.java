@@ -1,13 +1,11 @@
 package com.biblioteca.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Transient;
 import java.time.LocalDate;
 
 @Entity
@@ -19,30 +17,23 @@ public class Emprestimo {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    @JsonBackReference(value = "usuario-emprestimos")
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "livro_id")
-    @JsonBackReference(value = "livro-emprestimos")
     private Livro livro;
 
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
 
-    @Transient
-    private Long usuarioId;
-
-    @Transient
-    private Long livroId;
-
     // Construtores
     public Emprestimo() {}
 
-    public Emprestimo(Usuario usuario, Livro livro, LocalDate dataEmprestimo) {
+    public Emprestimo(Usuario usuario, Livro livro, LocalDate dataEmprestimo, LocalDate dataDevolucao) {
         this.usuario = usuario;
         this.livro = livro;
         this.dataEmprestimo = dataEmprestimo;
+        this.dataDevolucao = dataDevolucao;
     }
 
     // Getters e Setters
@@ -84,21 +75,5 @@ public class Emprestimo {
 
     public void setDataDevolucao(LocalDate dataDevolucao) {
         this.dataDevolucao = dataDevolucao;
-    }
-
-    public Long getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(Long usuarioId) {
-        this.usuarioId = usuarioId;
-    }
-
-    public Long getLivroId() {
-        return livroId;
-    }
-
-    public void setLivroId(Long livroId) {
-        this.livroId = livroId;
     }
 }

@@ -29,12 +29,4 @@ public class UsuarioService {
     public void deletar(Long id) {
         usuarioRepository.deleteById(id);
     }
-
-    public Usuario atualizar(Long id, Usuario usuarioAtualizado) {
-        if (usuarioRepository.existsById(id)) {
-            usuarioAtualizado.setId(id);
-            return usuarioRepository.save(usuarioAtualizado);
-        }
-        return null;
-    }
 }

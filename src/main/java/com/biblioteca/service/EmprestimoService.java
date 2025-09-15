@@ -2,14 +2,11 @@ package com.biblioteca.service;
 
 import com.biblioteca.model.Emprestimo;
 import com.biblioteca.model.Livro;
-import com.biblioteca.model.Usuario;
 import com.biblioteca.repository.EmprestimoRepository;
 import com.biblioteca.repository.LivroRepository;
-import com.biblioteca.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +19,6 @@ public class EmprestimoService {
     @Autowired
     private LivroRepository livroRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
     public List<Emprestimo> listarTodos() {
         return emprestimoRepository.findAll();
     }
@@ -34,70 +28,22 @@ public class EmprestimoService {
     }
 
     public Emprestimo salvar(Emprestimo emprestimo) {
+        // Marcar livro como indisponível ao emprestar
+        Livro livro = emprestimo.getLivro();
+        livro.setDisponivel(false);
+        livroRepository.save(livro);
         return emprestimoRepository.save(emprestimo);
     }
 
     public void deletar(Long id) {
-        emprestimoRepository.deleteById(id);
-    }
-
-    public Emprestimo atualizar(Long id, Emprestimo emprestimoAtualizado) {
-        if (emprestimoRepository.existsById(id)) {
-            emprestimoAtualizado.setId(id);
-            return emprestimoRepository.save(emprestimoAtualizado);
-        }
-        return null;
-    }
-
-    public Emprestimo createEmprestimo(Long usuarioId, Long livroId) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId);
-        Optional<Livro> livroOpt = livroRepository.findById(livroId);
-
-        if (usuarioOpt.isPresent() && livroOpt.isPresent()) {
-            Livro livro = livroOpt.get();
-            if (livro.isDisponivel()) {
-                livro.setDisponivel(false);
-                livroRepository.save(livro);
-
-                Emprestimo emprestimo = new Emprestimo(usuarioOpt.get(), livro, LocalDate.now());
-                return emprestimoRepository.save(emprestimo);
-            }
-        }
-        return null;
-    }
-
-    public Emprestimo updateEmprestimo(Long id, Integer usuarioId, Integer livroId, String dataDevolucaoStr) {
         Optional<Emprestimo> emprestimoOpt = emprestimoRepository.findById(id);
         if (emprestimoOpt.isPresent()) {
             Emprestimo emprestimo = emprestimoOpt.get();
-            Optional<Usuario> usuarioOpt = usuarioRepository.findById(usuarioId.longValue());
-            Optional<Livro> livroOpt = livroRepository.findById(livroId.longValue());
-            if (usuarioOpt.isPresent() && livroOpt.isPresent()) {
-                emprestimo.setUsuario(usuarioOpt.get());
-                emprestimo.setLivro(livroOpt.get());
-                if (dataDevolucaoStr != null) {
-                    emprestimo.setDataDevolucao(LocalDate.parse(dataDevolucaoStr));
-                }
-                return emprestimoRepository.save(emprestimo);
-            }
+            // Marcar livro como disponível ao devolver
+            Livro livro = emprestimo.getLivro();
+            livro.setDisponivel(true);
+            livroRepository.save(livro);
         }
-        return null;
-    }
-
-    public boolean devolverLivro(Long emprestimoId) {
-        Optional<Emprestimo> emprestimoOpt = emprestimoRepository.findById(emprestimoId);
-        if (emprestimoOpt.isPresent()) {
-            Emprestimo emprestimo = emprestimoOpt.get();
-            emprestimo.setDataDevolucao(LocalDate.now());
-            emprestimo.getLivro().setDisponivel(true);
-            livroRepository.save(emprestimo.getLivro());
-            emprestimoRepository.save(emprestimo);
-            return true;
-        }
-        return false;
-    }
-
-    public Emprestimo emprestarLivro(Long usuarioId, Long livroId) {
-        return createEmprestimo(usuarioId, livroId);
+        emprestimoRepository.deleteById(id);
     }
 }

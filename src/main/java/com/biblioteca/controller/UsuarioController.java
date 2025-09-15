@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -24,23 +23,30 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
-        Optional<Usuario> usuario = usuarioService.buscarPorId(id);
-        return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return usuarioService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Usuario salvar(@RequestBody Usuario usuario) {
+    public Usuario criar(@RequestBody Usuario usuario) {
         return usuarioService.salvar(usuario);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
-        Usuario atualizado = usuarioService.atualizar(id, usuario);
-        return atualizado != null ? ResponseEntity.ok(atualizado) : ResponseEntity.notFound().build();
+        if (!usuarioService.buscarPorId(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        usuario.setId(id);
+        return ResponseEntity.ok(usuarioService.salvar(usuario));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        if (!usuarioService.buscarPorId(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
         usuarioService.deletar(id);
         return ResponseEntity.noContent().build();
     }

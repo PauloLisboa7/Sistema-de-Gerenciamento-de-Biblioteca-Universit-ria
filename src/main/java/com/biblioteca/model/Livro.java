@@ -1,12 +1,9 @@
 package com.biblioteca.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import java.util.List;
 
 @Entity
 public class Livro {
@@ -17,21 +14,17 @@ public class Livro {
 
     private String titulo;
     private String autor;
-    private int anoPublicacao;
+    private int ano;
     private String isbn;
     private boolean disponivel;
-
-    @OneToMany(mappedBy = "livro")
-    @JsonManagedReference(value = "livro-emprestimos")
-    private List<Emprestimo> emprestimos;
 
     // Construtores
     public Livro() {}
 
-    public Livro(String titulo, String autor, int anoPublicacao, String isbn, boolean disponivel) {
+    public Livro(String titulo, String autor, int ano, String isbn, boolean disponivel) {
         this.titulo = titulo;
         this.autor = autor;
-        this.anoPublicacao = anoPublicacao;
+        this.ano = ano;
         this.isbn = isbn;
         this.disponivel = disponivel;
     }
@@ -61,12 +54,12 @@ public class Livro {
         this.autor = autor;
     }
 
-    public int getAnoPublicacao() {
-        return anoPublicacao;
+    public int getAno() {
+        return ano;
     }
 
-    public void setAnoPublicacao(int anoPublicacao) {
-        this.anoPublicacao = anoPublicacao;
+    public void setAno(int ano) {
+        this.ano = ano;
     }
 
     public String getIsbn() {
@@ -83,13 +76,5 @@ public class Livro {
 
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
-    }
-
-    public List<Emprestimo> getEmprestimos() {
-        return emprestimos;
-    }
-
-    public void setEmprestimos(List<Emprestimo> emprestimos) {
-        this.emprestimos = emprestimos;
     }
 }
