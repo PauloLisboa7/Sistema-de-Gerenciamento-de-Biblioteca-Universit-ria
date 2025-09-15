@@ -29,11 +29,10 @@ public class Emprestimo {
     // Construtores
     public Emprestimo() {}
 
-    public Emprestimo(Usuario usuario, Livro livro, LocalDate dataEmprestimo, LocalDate dataDevolucao) {
+    public Emprestimo(Usuario usuario, Livro livro, LocalDate dataEmprestimo) {
         this.usuario = usuario;
         this.livro = livro;
         this.dataEmprestimo = dataEmprestimo;
-        this.dataDevolucao = dataDevolucao;
     }
 
     // Getters e Setters

@@ -2,6 +2,7 @@ package com.biblioteca.controller;
 
 import com.biblioteca.model.Emprestimo;
 import com.biblioteca.service.EmprestimoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +14,8 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class EmprestimoController {
 
-    private final EmprestimoService emprestimoService;
-
-    public EmprestimoController(EmprestimoService emprestimoService) {
-        this.emprestimoService = emprestimoService;
-    }
+    @Autowired
+    private EmprestimoService emprestimoService;
 
     @GetMapping
     public List<Emprestimo> listarTodos() {
@@ -27,33 +25,35 @@ public class EmprestimoController {
     @GetMapping("/{id}")
     public ResponseEntity<Emprestimo> buscarPorId(@PathVariable Long id) {
         Optional<Emprestimo> emprestimo = emprestimoService.buscarPorId(id);
-        return emprestimo.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return emprestimo.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/emprestar")
-    public ResponseEntity<Emprestimo> emprestarLivro(@RequestParam Long usuarioId, @RequestParam Long livroId) {
-        Emprestimo emprestimo = emprestimoService.emprestarLivro(usuarioId, livroId);
-        if (emprestimo == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(emprestimo);
+    @PostMapping
+    public Emprestimo salvar(@RequestBody Emprestimo emprestimo) {
+        return emprestimoService.salvar(emprestimo);
     }
 
-    @PostMapping("/devolver/{id}")
-    public ResponseEntity<Void> devolverLivro(@PathVariable Long id) {
-        boolean sucesso = emprestimoService.devolverLivro(id);
-        if (!sucesso) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.noContent().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<Emprestimo> atualizar(@PathVariable Long id, @RequestBody Emprestimo emprestimo) {
+        Emprestimo atualizado = emprestimoService.atualizar(id, emprestimo);
+        return atualizado != null ? ResponseEntity.ok(atualizado) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (!emprestimoService.buscarPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
         emprestimoService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/emprestar/{usuarioId}/{livroId}")
+    public ResponseEntity<Emprestimo> emprestarLivro(@PathVariable Long usuarioId, @PathVariable Long livroId) {
+        Emprestimo emprestimo = emprestimoService.emprestarLivro(usuarioId, livroId);
+        return emprestimo != null ? ResponseEntity.ok(emprestimo) : ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/devolver/{emprestimoId}")
+    public ResponseEntity<Void> devolverLivro(@PathVariable Long emprestimoId) {
+        boolean sucesso = emprestimoService.devolverLivro(emprestimoId);
+        return sucesso ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

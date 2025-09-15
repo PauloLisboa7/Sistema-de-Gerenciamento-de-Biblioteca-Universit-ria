@@ -6,6 +6,7 @@ import com.biblioteca.model.Usuario;
 import com.biblioteca.repository.EmprestimoRepository;
 import com.biblioteca.repository.LivroRepository;
 import com.biblioteca.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,15 +16,14 @@ import java.util.Optional;
 @Service
 public class EmprestimoService {
 
-    private final EmprestimoRepository emprestimoRepository;
-    private final LivroRepository livroRepository;
-    private final UsuarioRepository usuarioRepository;
+    @Autowired
+    private EmprestimoRepository emprestimoRepository;
 
-    public EmprestimoService(EmprestimoRepository emprestimoRepository, LivroRepository livroRepository, UsuarioRepository usuarioRepository) {
-        this.emprestimoRepository = emprestimoRepository;
-        this.livroRepository = livroRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
+    @Autowired
+    private LivroRepository livroRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public List<Emprestimo> listarTodos() {
         return emprestimoRepository.findAll();
@@ -31,6 +31,22 @@ public class EmprestimoService {
 
     public Optional<Emprestimo> buscarPorId(Long id) {
         return emprestimoRepository.findById(id);
+    }
+
+    public Emprestimo salvar(Emprestimo emprestimo) {
+        return emprestimoRepository.save(emprestimo);
+    }
+
+    public void deletar(Long id) {
+        emprestimoRepository.deleteById(id);
+    }
+
+    public Emprestimo atualizar(Long id, Emprestimo emprestimoAtualizado) {
+        if (emprestimoRepository.existsById(id)) {
+            emprestimoAtualizado.setId(id);
+            return emprestimoRepository.save(emprestimoAtualizado);
+        }
+        return null;
     }
 
     public Emprestimo emprestarLivro(Long usuarioId, Long livroId) {
@@ -43,36 +59,23 @@ public class EmprestimoService {
                 livro.setDisponivel(false);
                 livroRepository.save(livro);
 
-                Emprestimo emprestimo = new Emprestimo();
-                emprestimo.setUsuario(usuarioOpt.get());
-                emprestimo.setLivro(livro);
-                emprestimo.setDataEmprestimo(LocalDate.now());
+                Emprestimo emprestimo = new Emprestimo(usuarioOpt.get(), livro, LocalDate.now());
                 return emprestimoRepository.save(emprestimo);
             }
         }
-        return null; // Ou lançar exceção
+        return null;
     }
 
     public boolean devolverLivro(Long emprestimoId) {
         Optional<Emprestimo> emprestimoOpt = emprestimoRepository.findById(emprestimoId);
         if (emprestimoOpt.isPresent()) {
             Emprestimo emprestimo = emprestimoOpt.get();
-            Livro livro = emprestimo.getLivro();
-            livro.setDisponivel(true);
-            livroRepository.save(livro);
-
             emprestimo.setDataDevolucao(LocalDate.now());
+            emprestimo.getLivro().setDisponivel(true);
+            livroRepository.save(emprestimo.getLivro());
             emprestimoRepository.save(emprestimo);
             return true;
         }
         return false;
-    }
-
-    public Emprestimo salvar(Emprestimo emprestimo) {
-        return emprestimoRepository.save(emprestimo);
-    }
-
-    public void deletar(Long id) {
-        emprestimoRepository.deleteById(id);
     }
 }

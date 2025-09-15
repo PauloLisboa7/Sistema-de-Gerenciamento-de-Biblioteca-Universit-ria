@@ -2,6 +2,7 @@ package com.biblioteca.service;
 
 import com.biblioteca.model.Livro;
 import com.biblioteca.repository.LivroRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,11 +11,8 @@ import java.util.Optional;
 @Service
 public class LivroService {
 
-    private final LivroRepository livroRepository;
-
-    public LivroService(LivroRepository livroRepository) {
-        this.livroRepository = livroRepository;
-    }
+    @Autowired
+    private LivroRepository livroRepository;
 
     public List<Livro> listarTodos() {
         return livroRepository.findAll();
@@ -30,5 +28,13 @@ public class LivroService {
 
     public void deletar(Long id) {
         livroRepository.deleteById(id);
+    }
+
+    public Livro atualizar(Long id, Livro livroAtualizado) {
+        if (livroRepository.existsById(id)) {
+            livroAtualizado.setId(id);
+            return livroRepository.save(livroAtualizado);
+        }
+        return null;
     }
 }

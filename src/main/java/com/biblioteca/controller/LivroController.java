@@ -2,6 +2,7 @@ package com.biblioteca.controller;
 
 import com.biblioteca.model.Livro;
 import com.biblioteca.service.LivroService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +14,8 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class LivroController {
 
-    private final LivroService livroService;
-
-    public LivroController(LivroService livroService) {
-        this.livroService = livroService;
-    }
+    @Autowired
+    private LivroService livroService;
 
     @GetMapping
     public List<Livro> listarTodos() {
@@ -27,28 +25,22 @@ public class LivroController {
     @GetMapping("/{id}")
     public ResponseEntity<Livro> buscarPorId(@PathVariable Long id) {
         Optional<Livro> livro = livroService.buscarPorId(id);
-        return livro.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return livro.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Livro criar(@RequestBody Livro livro) {
+    public Livro salvar(@RequestBody Livro livro) {
         return livroService.salvar(livro);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Livro> atualizar(@PathVariable Long id, @RequestBody Livro livro) {
-        if (!livroService.buscarPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        livro.setId(id);
-        return ResponseEntity.ok(livroService.salvar(livro));
+        Livro atualizado = livroService.atualizar(id, livro);
+        return atualizado != null ? ResponseEntity.ok(atualizado) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (!livroService.buscarPorId(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
         livroService.deletar(id);
         return ResponseEntity.noContent().build();
     }
