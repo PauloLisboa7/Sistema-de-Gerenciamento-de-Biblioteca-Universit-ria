@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Biblioteca Universitária</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">Sistema de Gerenciamento de Biblioteca Universitária</h1>
+
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Livros Cadastrados</h2>
+            <button id="addBookBtn" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Adicionar Livro</button>
+            <div id="booksList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- Modal para adicionar/editar livro -->
+        <div id="bookModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded shadow-lg w-96">
+                <h3 id="modalTitle" class="text-xl font-semibold mb-4">Adicionar Livro</h3>
+                <form id="bookForm">
+                    <input type="hidden" id="bookId">
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Título</label>
+                        <input type="text" id="titulo" class="w-full px-3 py-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Autor</label>
+                        <input type="text" id="autor" class="w-full px-3 py-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Ano de Publicação</label>
+                        <input type="number" id="anoPublicacao" class="w-full px-3 py-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700">ISBN</label>
+                        <input type="text" id="isbn" class="w-full px-3 py-2 border rounded" required>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="button" id="cancelBtn" class="mr-2 px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        const booksList = document.getElementById('booksList');
+        const bookModal = document.getElementById('bookModal');
+        const bookForm = document.getElementById('bookForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const addBookBtn = document.getElementById('addBookBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        let editingBookId = null;
+
+        // Carregar livros
+        async function loadBooks() {
+            const response = await fetch(`${API_BASE}/livros`);
+            const books = await response.json();
+            booksList.innerHTML = '';
+            books.forEach(book => {
+                const bookDiv = document.createElement('div');
+                bookDiv.className = 'bg-white p-4 rounded shadow';
+                bookDiv.innerHTML = `
+                    <h3 class="font-bold">${book.titulo}</h3>
+                    <p>Autor: ${book.autor}</p>
+                    <p>Ano: ${book.anoPublicacao}</p>
+                    <p>ISBN: ${book.isbn}</p>
+                    <p>Disponível: ${book.disponivel ? 'Sim' : 'Não'}</p>
+                    <div class="mt-2">
+                        <button onclick="editBook(${book.id})" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Editar</button>
+                        <button onclick="deleteBook(${book.id})" class="bg-red-500 text-white px-2 py-1 rounded">Remover</button>
+                    </div>
+                `;
+                booksList.appendChild(bookDiv);
+            });
+        }
+
+        // Adicionar livro
+        addBookBtn.addEventListener('click', () => {
+            editingBookId = null;
+            modalTitle.textContent = 'Adicionar Livro';
+            bookForm.reset();
+            bookModal.classList.remove('hidden');
+        });
+
+        // Editar livro
+        function editBook(id) {
+            fetch(`${API_BASE}/livros/${id}`)
+                .then(response => response.json())
+                .then(book => {
+                    editingBookId = book.id;
+                    modalTitle.textContent = 'Editar Livro';
+                    document.getElementById('titulo').value = book.titulo;
+                    document.getElementById('autor').value = book.autor;
+                    document.getElementById('anoPublicacao').value = book.anoPublicacao;
+                    document.getElementById('isbn').value = book.isbn;
+                    bookModal.classList.remove('hidden');
+                });
+        }
+
+        // Deletar livro
+        function deleteBook(id) {
+            if (confirm('Tem certeza que deseja remover este livro?')) {
+                fetch(`${API_BASE}/livros/${id}`, { method: 'DELETE' })
+                    .then(() => loadBooks());
+            }
+        }
+
+        // Salvar livro
+        bookForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const book = {
+                titulo: document.getElementById('titulo').value,
+                autor: document.getElementById('autor').value,
+                anoPublicacao: parseInt(document.getElementById('anoPublicacao').value),
+                isbn: document.getElementById('isbn').value
+            };
+            const method = editingBookId ? 'PUT' : 'POST';
+            const url = editingBookId ? `${API_BASE}/livros/${editingBookId}` : `${API_BASE}/livros`;
+            await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(book)
+            });
+            bookModal.classList.add('hidden');
+            loadBooks();
+        });
+
+        // Cancelar
+        cancelBtn.addEventListener('click', () => {
+            bookModal.classList.add('hidden');
+        });
+
+        // Carregar livros ao iniciar
+        loadBooks();
+    </script>
+</body>
+</html>
