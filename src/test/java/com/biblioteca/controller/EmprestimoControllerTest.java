@@ -49,7 +49,7 @@ public class EmprestimoControllerTest {
         emprestimo.setLivro(livro);
         emprestimo.setDataEmprestimo(LocalDate.now());
 
-        when(emprestimoService.findAll()).thenReturn(Arrays.asList(emprestimo));
+        when(emprestimoService.listarTodos()).thenReturn(Arrays.asList(emprestimo));
 
         mockMvc.perform(get("/api/emprestimos"))
                 .andExpect(status().isOk())

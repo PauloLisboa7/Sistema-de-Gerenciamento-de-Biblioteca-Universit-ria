@@ -39,7 +39,7 @@ public class UsuarioControllerTest {
         usuario.setCurso("Engenharia");
         usuario.setEmail("joao@email.com");
 
-        when(usuarioService.findAll()).thenReturn(Arrays.asList(usuario));
+        when(usuarioService.listarTodos()).thenReturn(Arrays.asList(usuario));
 
         mockMvc.perform(get("/api/usuarios"))
                 .andExpect(status().isOk())
