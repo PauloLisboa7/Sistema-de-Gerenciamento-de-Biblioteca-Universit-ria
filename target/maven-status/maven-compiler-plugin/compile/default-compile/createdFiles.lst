@@ -1,0 +1,13 @@
+com\biblioteca\repository\LivroRepository.class
+com\biblioteca\service\UsuarioService.class
+com\biblioteca\SistemaBibliotecaApplication.class
+com\biblioteca\controller\UsuarioController.class
+com\biblioteca\repository\UsuarioRepository.class
+com\biblioteca\model\Usuario.class
+com\biblioteca\model\Livro.class
+com\biblioteca\repository\EmprestimoRepository.class
+com\biblioteca\service\LivroService.class
+com\biblioteca\model\Emprestimo.class
+com\biblioteca\controller\LivroController.class
+com\biblioteca\service\EmprestimoService.class
+com\biblioteca\controller\EmprestimoController.class
