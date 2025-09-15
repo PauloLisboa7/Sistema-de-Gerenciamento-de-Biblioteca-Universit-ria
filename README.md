@@ -18,13 +18,13 @@ Este é um sistema simples para gerenciar livros, usuários e empréstimos em um
 
 1. Instale Java 17 e PostgreSQL.
 2. Configure o banco de dados PostgreSQL com as credenciais em `application.properties`.
-3. Execute `mvnw.cmd spring-boot:run` para iniciar o backend.
+3. Execute `.\mvnw.cmd spring-boot:run` para iniciar o backend (no PowerShell).
 4. Abra `http://localhost:8080` no navegador para o frontend.
 
 ## Testes
 
 Para executar os testes unitários:
-- `mvnw.cmd test` (requer Maven wrapper configurado)
+- `.\mvnw.cmd test` (no PowerShell, requer Maven wrapper configurado)
 
 Para testes manuais, consulte `TEST_FRONTEND.md`.
 
