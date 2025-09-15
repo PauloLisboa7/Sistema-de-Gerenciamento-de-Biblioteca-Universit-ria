@@ -24,15 +24,16 @@ public class Emprestimo {
     private Livro livro;
 
     private LocalDate dataEmprestimo;
-    private LocalDate dataDevolucao; // pode ser null se não devolvido
+    private LocalDate dataDevolucao;
 
     // Construtores
     public Emprestimo() {}
 
-    public Emprestimo(Usuario usuario, Livro livro, LocalDate dataEmprestimo) {
+    public Emprestimo(Usuario usuario, Livro livro, LocalDate dataEmprestimo, LocalDate dataDevolucao) {
         this.usuario = usuario;
         this.livro = livro;
         this.dataEmprestimo = dataEmprestimo;
+        this.dataDevolucao = dataDevolucao;
     }
 
     // Getters e Setters

@@ -13,33 +13,52 @@
         <div class="mb-8">
             <h2 class="text-2xl font-semibold mb-4">Livros Cadastrados</h2>
             <button id="addBookBtn" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Adicionar Livro</button>
-            <div id="booksList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <table class="w-full bg-white shadow-md rounded">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="p-4">Título</th>
+                        <th class="p-4">Autor</th>
+                        <th class="p-4">Ano</th>
+                        <th class="p-4">ISBN</th>
+                        <th class="p-4">Disponível</th>
+                        <th class="p-4">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="booksTableBody">
+                    <!-- Livros serão carregados aqui -->
+                </tbody>
+            </table>
         </div>
 
         <!-- Modal para adicionar/editar livro -->
         <div id="bookModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-            <div class="bg-white p-6 rounded shadow-lg w-96">
+            <div class="bg-white p-8 rounded shadow-md w-96">
                 <h3 id="modalTitle" class="text-xl font-semibold mb-4">Adicionar Livro</h3>
                 <form id="bookForm">
                     <input type="hidden" id="bookId">
                     <div class="mb-4">
                         <label class="block text-gray-700">Título</label>
-                        <input type="text" id="titulo" class="w-full px-3 py-2 border rounded" required>
+                        <input type="text" id="titulo" class="w-full p-2 border rounded" required>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700">Autor</label>
-                        <input type="text" id="autor" class="w-full px-3 py-2 border rounded" required>
+                        <input type="text" id="autor" class="w-full p-2 border rounded" required>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700">Ano de Publicação</label>
-                        <input type="number" id="anoPublicacao" class="w-full px-3 py-2 border rounded" required>
+                        <input type="number" id="anoPublicacao" class="w-full p-2 border rounded" required>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700">ISBN</label>
-                        <input type="text" id="isbn" class="w-full px-3 py-2 border rounded" required>
+                        <input type="text" id="isbn" class="w-full p-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700">
+                            <input type="checkbox" id="disponivel" checked> Disponível
+                        </label>
                     </div>
                     <div class="flex justify-end">
-                        <button type="button" id="cancelBtn" class="mr-2 px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+                        <button type="button" id="cancelBtn" class="mr-2 px-4 py-2 bg-gray-500 text-white rounded">Cancelar</button>
                         <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Salvar</button>
                     </div>
                 </form>
@@ -49,7 +68,7 @@
 
     <script>
         const API_BASE = 'http://localhost:8080/api';
-        const booksList = document.getElementById('booksList');
+        const booksTableBody = document.getElementById('booksTableBody');
         const bookModal = document.getElementById('bookModal');
         const bookForm = document.getElementById('bookForm');
         const modalTitle = document.getElementById('modalTitle');
@@ -62,22 +81,21 @@
         async function loadBooks() {
             const response = await fetch(`${API_BASE}/livros`);
             const books = await response.json();
-            booksList.innerHTML = '';
+            booksTableBody.innerHTML = '';
             books.forEach(book => {
-                const bookDiv = document.createElement('div');
-                bookDiv.className = 'bg-white p-4 rounded shadow';
-                bookDiv.innerHTML = `
-                    <h3 class="font-bold">${book.titulo}</h3>
-                    <p>Autor: ${book.autor}</p>
-                    <p>Ano: ${book.anoPublicacao}</p>
-                    <p>ISBN: ${book.isbn}</p>
-                    <p>Disponível: ${book.disponivel ? 'Sim' : 'Não'}</p>
-                    <div class="mt-2">
-                        <button onclick="editBook(${book.id})" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Editar</button>
-                        <button onclick="deleteBook(${book.id})" class="bg-red-500 text-white px-2 py-1 rounded">Remover</button>
-                    </div>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="p-4">${book.titulo}</td>
+                    <td class="p-4">${book.autor}</td>
+                    <td class="p-4">${book.anoPublicacao}</td>
+                    <td class="p-4">${book.isbn}</td>
+                    <td class="p-4">${book.disponivel ? 'Sim' : 'Não'}</td>
+                    <td class="p-4">
+                        <button class="bg-yellow-500 text-white px-2 py-1 rounded mr-2" onclick="editBook(${book.id})">Editar</button>
+                        <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteBook(${book.id})">Remover</button>
+                    </td>
                 `;
-                booksList.appendChild(bookDiv);
+                booksTableBody.appendChild(row);
             });
         }
 
@@ -86,6 +104,7 @@
             editingBookId = null;
             modalTitle.textContent = 'Adicionar Livro';
             bookForm.reset();
+            document.getElementById('disponivel').checked = true;
             bookModal.classList.remove('hidden');
         });
 
@@ -100,6 +119,7 @@
                     document.getElementById('autor').value = book.autor;
                     document.getElementById('anoPublicacao').value = book.anoPublicacao;
                     document.getElementById('isbn').value = book.isbn;
+                    document.getElementById('disponivel').checked = book.disponivel;
                     bookModal.classList.remove('hidden');
                 });
         }
@@ -113,23 +133,26 @@
         }
 
         // Salvar livro
-        bookForm.addEventListener('submit', async (e) => {
+        bookForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const book = {
                 titulo: document.getElementById('titulo').value,
                 autor: document.getElementById('autor').value,
                 anoPublicacao: parseInt(document.getElementById('anoPublicacao').value),
-                isbn: document.getElementById('isbn').value
+                isbn: document.getElementById('isbn').value,
+                disponivel: document.getElementById('disponivel').checked
             };
             const method = editingBookId ? 'PUT' : 'POST';
             const url = editingBookId ? `${API_BASE}/livros/${editingBookId}` : `${API_BASE}/livros`;
-            await fetch(url, {
+            fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(book)
-            });
-            bookModal.classList.add('hidden');
-            loadBooks();
+            })
+                .then(() => {
+                    bookModal.classList.add('hidden');
+                    loadBooks();
+                });
         });
 
         // Cancelar

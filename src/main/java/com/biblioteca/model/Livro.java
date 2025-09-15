@@ -16,16 +16,17 @@ public class Livro {
     private String autor;
     private int anoPublicacao;
     private String isbn;
-    private boolean disponivel = true; // true para disponível, false para emprestado
+    private boolean disponivel;
 
     // Construtores
     public Livro() {}
 
-    public Livro(String titulo, String autor, int anoPublicacao, String isbn) {
+    public Livro(String titulo, String autor, int anoPublicacao, String isbn, boolean disponivel) {
         this.titulo = titulo;
         this.autor = autor;
         this.anoPublicacao = anoPublicacao;
         this.isbn = isbn;
+        this.disponivel = disponivel;
     }
 
     // Getters e Setters
