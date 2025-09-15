@@ -96,4 +96,8 @@ public class EmprestimoService {
         }
         return false;
     }
+
+    public Emprestimo emprestarLivro(Long usuarioId, Long livroId) {
+        return createEmprestimo(usuarioId, livroId);
+    }
 }
