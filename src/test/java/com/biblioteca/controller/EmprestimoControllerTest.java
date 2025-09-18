@@ -72,7 +72,7 @@ public class EmprestimoControllerTest {
         emprestimo.setUsuario(usuario);
         emprestimo.setLivro(livro);
 
-        when(emprestimoService.findById(1L)).thenReturn(Optional.of(emprestimo));
+        when(emprestimoService.buscarPorId(1L)).thenReturn(Optional.of(emprestimo));
 
         mockMvc.perform(get("/api/emprestimos/1"))
                 .andExpect(status().isOk())
@@ -81,7 +81,7 @@ public class EmprestimoControllerTest {
 
     @Test
     public void testGetEmprestimoByIdNotFound() throws Exception {
-        when(emprestimoService.findById(999L)).thenReturn(Optional.empty());
+        when(emprestimoService.buscarPorId(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/emprestimos/999"))
                 .andExpect(status().isNotFound());
@@ -90,8 +90,12 @@ public class EmprestimoControllerTest {
     @Test
     public void testCreateEmprestimo() throws Exception {
         Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setUsuarioId(1L);
-        emprestimo.setLivroId(1L);
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        Livro livro = new Livro();
+        livro.setId(1L);
+        emprestimo.setUsuario(usuario);
+        emprestimo.setLivro(livro);
         emprestimo.setDataEmprestimo(LocalDate.now());
 
         Emprestimo savedEmprestimo = new Emprestimo();
@@ -99,7 +103,7 @@ public class EmprestimoControllerTest {
         savedEmprestimo.setUsuario(new Usuario());
         savedEmprestimo.setLivro(new Livro());
 
-        when(emprestimoService.save(any(Emprestimo.class))).thenReturn(savedEmprestimo);
+        when(emprestimoService.salvar(any(Emprestimo.class))).thenReturn(savedEmprestimo);
 
         mockMvc.perform(post("/api/emprestimos")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,8 +121,8 @@ public class EmprestimoControllerTest {
         updatedEmprestimo.setId(1L);
         updatedEmprestimo.setDataDevolucao(LocalDate.now().plusDays(7));
 
-        when(emprestimoService.findById(1L)).thenReturn(Optional.of(new Emprestimo()));
-        when(emprestimoService.save(any(Emprestimo.class))).thenReturn(updatedEmprestimo);
+        when(emprestimoService.buscarPorId(1L)).thenReturn(Optional.of(new Emprestimo()));
+        when(emprestimoService.salvar(any(Emprestimo.class))).thenReturn(updatedEmprestimo);
 
         mockMvc.perform(put("/api/emprestimos/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -129,21 +133,25 @@ public class EmprestimoControllerTest {
 
     @Test
     public void testDeleteEmprestimo() throws Exception {
-        when(emprestimoService.findById(1L)).thenReturn(Optional.of(new Emprestimo()));
+        when(emprestimoService.buscarPorId(1L)).thenReturn(Optional.of(new Emprestimo()));
 
         mockMvc.perform(delete("/api/emprestimos/1"))
                 .andExpect(status().isNoContent());
 
-        verify(emprestimoService, times(1)).deleteById(1L);
+        verify(emprestimoService, times(1)).deletar(1L);
     }
 
     @Test
     public void testCreateEmprestimoInvalidUsuario() throws Exception {
         Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setUsuarioId(999L); // ID inexistente
-        emprestimo.setLivroId(1L);
+        Usuario usuario = new Usuario();
+        usuario.setId(999L); // ID inexistente
+        Livro livro = new Livro();
+        livro.setId(1L);
+        emprestimo.setUsuario(usuario);
+        emprestimo.setLivro(livro);
 
-        when(emprestimoService.save(any(Emprestimo.class))).thenThrow(new RuntimeException("Usuário não encontrado"));
+        when(emprestimoService.salvar(any(Emprestimo.class))).thenThrow(new RuntimeException("Usuário não encontrado"));
 
         mockMvc.perform(post("/api/emprestimos")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,10 +162,14 @@ public class EmprestimoControllerTest {
     @Test
     public void testCreateEmprestimoInvalidLivro() throws Exception {
         Emprestimo emprestimo = new Emprestimo();
-        emprestimo.setUsuarioId(1L);
-        emprestimo.setLivroId(999L); // ID inexistente
+        Usuario usuario = new Usuario();
+        usuario.setId(1L);
+        Livro livro = new Livro();
+        livro.setId(999L); // ID inexistente
+        emprestimo.setUsuario(usuario);
+        emprestimo.setLivro(livro);
 
-        when(emprestimoService.save(any(Emprestimo.class))).thenThrow(new RuntimeException("Livro não encontrado"));
+        when(emprestimoService.salvar(any(Emprestimo.class))).thenThrow(new RuntimeException("Livro não encontrado"));
 
         mockMvc.perform(post("/api/emprestimos")
                 .contentType(MediaType.APPLICATION_JSON)

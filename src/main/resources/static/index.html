@@ -6,75 +6,170 @@
     <title>Sistema de Biblioteca Universitária</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-4">
-    <div class="container mx-auto">
-        <h1 class="text-3xl font-bold text-center mb-8">Sistema de Gerenciamento de Biblioteca Universitária</h1>
-
-        <!-- Seção de Livros -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Livros</h2>
-            <button onclick="carregarLivros()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Carregar Livros</button>
-            <div id="livros-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            <div id="form-livro" class="hidden mt-4">
-                <h3 class="text-xl mb-2">Adicionar/Editar Livro</h3>
-                <form onsubmit="salvarLivro(event)">
-                    <input type="hidden" id="livro-id">
-                    <input type="text" id="titulo" placeholder="Título" required class="border p-2 mb-2 w-full">
-                    <input type="text" id="autor" placeholder="Autor" required class="border p-2 mb-2 w-full">
-                    <input type="number" id="ano" placeholder="Ano" required class="border p-2 mb-2 w-full">
-                    <input type="text" id="isbn" placeholder="ISBN" required class="border p-2 mb-2 w-full">
-                    <select id="disponivel" class="border p-2 mb-2 w-full">
-                        <option value="true">Disponível</option>
-                        <option value="false">Emprestado</option>
-                    </select>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Salvar</button>
-                    <button type="button" onclick="cancelarEdicao()" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">Cancelar</button>
-                </form>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Biblioteca Universitária</h1>
+                        <p class="text-slate-300 text-sm">Sistema de Gerenciamento</p>
+                    </div>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#livros" class="hover:text-yellow-400 transition-colors">Livros</a>
+                    <a href="#usuarios" class="hover:text-yellow-400 transition-colors">Usuários</a>
+                    <a href="#emprestimos" class="hover:text-yellow-400 transition-colors">Empréstimos</a>
+                </nav>
             </div>
         </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Seção de Livros -->
+        <section id="livros" class="mb-12">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold text-slate-800 flex items-center">
+                        <svg class="w-8 h-8 mr-3 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                        </svg>
+                        Livros
+                    </h2>
+                    <button onclick="mostrarFormLivro()" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Adicionar Livro
+                    </button>
+                </div>
+                <button onclick="carregarLivros()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg mb-6">Carregar Livros</button>
+                <div id="livros-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="form-livro" class="hidden mt-8 bg-slate-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Adicionar/Editar Livro</h3>
+                    <form onsubmit="salvarLivro(event)" class="space-y-4">
+                        <input type="hidden" id="livro-id">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="titulo" placeholder="Título" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <input type="text" id="autor" placeholder="Autor" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <input type="number" id="ano" placeholder="Ano" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <input type="text" id="isbn" placeholder="ISBN" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                        </div>
+                        <select id="disponivel" class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <option value="true">Disponível</option>
+                            <option value="false">Emprestado</option>
+                        </select>
+                        <div class="flex space-x-4">
+                            <button type="submit" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg">Salvar</button>
+                            <button type="button" onclick="cancelarEdicao()" class="bg-gradient-to-r from-slate-500 to-slate-600 text-white px-6 py-3 rounded-lg hover:from-slate-600 hover:to-slate-700 transition-all duration-300 shadow-md hover:shadow-lg">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
 
         <!-- Seção de Usuários -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Usuários</h2>
-            <button onclick="carregarUsuarios()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Carregar Usuários</button>
-            <div id="usuarios-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            <div id="form-usuario" class="hidden mt-4">
-                <h3 class="text-xl mb-2">Adicionar/Editar Usuário</h3>
-                <form onsubmit="salvarUsuario(event)">
-                    <input type="hidden" id="usuario-id">
-                    <input type="text" id="nome" placeholder="Nome" required class="border p-2 mb-2 w-full">
-                    <input type="text" id="matricula" placeholder="Matrícula" required class="border p-2 mb-2 w-full">
-                    <input type="text" id="curso" placeholder="Curso" required class="border p-2 mb-2 w-full">
-                    <input type="email" id="email" placeholder="E-mail" required class="border p-2 mb-2 w-full">
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Salvar</button>
-                    <button type="button" onclick="cancelarEdicaoUsuario()" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">Cancelar</button>
-                </form>
+        <section id="usuarios" class="mb-12">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold text-slate-800 flex items-center">
+                        <svg class="w-8 h-8 mr-3 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                        Usuários
+                    </h2>
+                    <button onclick="mostrarFormUsuario()" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Adicionar Usuário
+                    </button>
+                </div>
+                <button onclick="carregarUsuarios()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg mb-6">Carregar Usuários</button>
+                <div id="usuarios-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="form-usuario" class="hidden mt-8 bg-slate-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Adicionar/Editar Usuário</h3>
+                    <form onsubmit="salvarUsuario(event)" class="space-y-4">
+                        <input type="hidden" id="usuario-id">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="nome" placeholder="Nome" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <input type="text" id="matricula" placeholder="Matrícula" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <input type="text" id="curso" placeholder="Curso" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <input type="email" id="email" placeholder="E-mail" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                        </div>
+                        <div class="flex space-x-4">
+                            <button type="submit" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg">Salvar</button>
+                            <button type="button" onclick="cancelarEdicaoUsuario()" class="bg-gradient-to-r from-slate-500 to-slate-600 text-white px-6 py-3 rounded-lg hover:from-slate-600 hover:to-slate-700 transition-all duration-300 shadow-md hover:shadow-lg">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </section>
 
         <!-- Seção de Empréstimos -->
-        <div class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Empréstimos</h2>
-            <button onclick="carregarEmprestimos()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Carregar Empréstimos</button>
-            <div id="emprestimos-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            <div id="form-emprestimo" class="hidden mt-4">
-                <h3 class="text-xl mb-2">Registrar Empréstimo</h3>
-                <form onsubmit="salvarEmprestimo(event)">
-                    <input type="hidden" id="emprestimo-id">
-                    <select id="usuario-emprestimo" required class="border p-2 mb-2 w-full">
-                        <option value="">Selecione Usuário</option>
-                    </select>
-                    <select id="livro-emprestimo" required class="border p-2 mb-2 w-full">
-                        <option value="">Selecione Livro</option>
-                    </select>
-                    <input type="date" id="data-emprestimo" required class="border p-2 mb-2 w-full">
-                    <input type="date" id="data-devolucao" class="border p-2 mb-2 w-full">
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Salvar</button>
-                    <button type="button" onclick="cancelarEdicaoEmprestimo()" class="bg-gray-500 text-white px-4 py-2 rounded ml-2">Cancelar</button>
-                </form>
+        <section id="emprestimos" class="mb-12">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold text-slate-800 flex items-center">
+                        <svg class="w-8 h-8 mr-3 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                        </svg>
+                        Empréstimos
+                    </h2>
+                    <button onclick="mostrarFormEmprestimo()" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
+                        <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                        </svg>
+                        Novo Empréstimo
+                    </button>
+                </div>
+                <button onclick="carregarEmprestimos()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg mb-6">Carregar Empréstimos</button>
+                <div id="emprestimos-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="form-emprestimo" class="hidden mt-8 bg-slate-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Registrar Empréstimo</h3>
+                    <form onsubmit="salvarEmprestimo(event)" class="space-y-4">
+                        <input type="hidden" id="emprestimo-id">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <select id="usuario-emprestimo" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                <option value="">Selecione Usuário</option>
+                            </select>
+                            <select id="livro-emprestimo" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                <option value="">Selecione Livro</option>
+                            </select>
+                            <input type="date" id="data-emprestimo" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                            <input type="date" id="data-devolucao" class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                        </div>
+                        <div class="flex space-x-4">
+                            <button type="submit" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg">Salvar</button>
+                            <button type="button" onclick="cancelarEdicaoEmprestimo()" class="bg-gradient-to-r from-slate-500 to-slate-600 text-white px-6 py-3 rounded-lg hover:from-slate-600 hover:to-slate-700 transition-all duration-300 shadow-md hover:shadow-lg">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </section>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
+                    <svg class="w-6 h-6 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold">Biblioteca Universitária</h3>
+            </div>
+            <p class="text-slate-300 mb-4">Sistema de Gerenciamento de Livros e Empréstimos</p>
+            <p class="text-sm text-slate-400">© 2023 Universidade. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
     <script>
         const API_BASE = 'http://localhost:8080/api';

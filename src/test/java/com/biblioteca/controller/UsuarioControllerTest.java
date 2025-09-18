@@ -52,7 +52,7 @@ public class UsuarioControllerTest {
         usuario.setId(1L);
         usuario.setNome("João Silva");
 
-        when(usuarioService.findById(1L)).thenReturn(Optional.of(usuario));
+        when(usuarioService.buscarPorId(1L)).thenReturn(Optional.of(usuario));
 
         mockMvc.perform(get("/api/usuarios/1"))
                 .andExpect(status().isOk())
@@ -61,7 +61,7 @@ public class UsuarioControllerTest {
 
     @Test
     public void testGetUsuarioByIdNotFound() throws Exception {
-        when(usuarioService.findById(999L)).thenReturn(Optional.empty());
+        when(usuarioService.buscarPorId(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/usuarios/999"))
                 .andExpect(status().isNotFound());
@@ -82,7 +82,7 @@ public class UsuarioControllerTest {
         savedUsuario.setCurso("Medicina");
         savedUsuario.setEmail("maria@email.com");
 
-        when(usuarioService.save(any(Usuario.class))).thenReturn(savedUsuario);
+        when(usuarioService.salvar(any(Usuario.class))).thenReturn(savedUsuario);
 
         mockMvc.perform(post("/api/usuarios")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -100,8 +100,8 @@ public class UsuarioControllerTest {
         updatedUsuario.setId(1L);
         updatedUsuario.setNome("João Silva Atualizado");
 
-        when(usuarioService.findById(1L)).thenReturn(Optional.of(new Usuario()));
-        when(usuarioService.save(any(Usuario.class))).thenReturn(updatedUsuario);
+        when(usuarioService.buscarPorId(1L)).thenReturn(Optional.of(new Usuario()));
+        when(usuarioService.salvar(any(Usuario.class))).thenReturn(updatedUsuario);
 
         mockMvc.perform(put("/api/usuarios/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -112,12 +112,12 @@ public class UsuarioControllerTest {
 
     @Test
     public void testDeleteUsuario() throws Exception {
-        when(usuarioService.findById(1L)).thenReturn(Optional.of(new Usuario()));
+        when(usuarioService.buscarPorId(1L)).thenReturn(Optional.of(new Usuario()));
 
         mockMvc.perform(delete("/api/usuarios/1"))
                 .andExpect(status().isNoContent());
 
-        verify(usuarioService, times(1)).deleteById(1L);
+        verify(usuarioService, times(1)).deletar(1L);
     }
 
     @Test
