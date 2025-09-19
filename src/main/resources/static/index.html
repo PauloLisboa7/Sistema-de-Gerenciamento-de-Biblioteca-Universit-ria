@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Biblioteca Universitária</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 min-h-screen">
     <!-- Header -->
     <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-lg">
         <div class="container mx-auto px-4 py-6">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center">
-                        <svg class="w-6 h-6 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
+                    <img src="images/senac-logo.png" alt="Senac Logo" class="w-12 h-12 object-contain" />
                     <div>
                         <h1 class="text-2xl font-bold">Biblioteca Universitária</h1>
                         <p class="text-slate-300 text-sm">Sistema de Gerenciamento</p>
@@ -27,6 +28,14 @@
                     <a href="#usuarios" class="hover:text-yellow-400 transition-colors">Usuários</a>
                     <a href="#emprestimos" class="hover:text-yellow-400 transition-colors">Empréstimos</a>
                 </nav>
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors">
+                    <svg id="sun-icon" class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
+                    </svg>
+                    <svg id="moon-icon" class="w-6 h-6 text-slate-400 hidden" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </header>
@@ -34,7 +43,7 @@
     <div class="container mx-auto px-4 py-8">
         <!-- Seção de Livros -->
         <section id="livros" class="mb-12">
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-6 mb-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-3xl font-bold text-slate-800 flex items-center">
                         <svg class="w-8 h-8 mr-3 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
@@ -51,8 +60,8 @@
                 </div>
                 <button onclick="carregarLivros()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg mb-6">Carregar Livros</button>
                 <div id="livros-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-                <div id="form-livro" class="hidden mt-8 bg-slate-50 p-6 rounded-lg border-l-4 border-yellow-500">
-                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Adicionar/Editar Livro</h3>
+                <div id="form-livro" class="hidden mt-8 bg-slate-50 dark:bg-slate-600 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800 dark:text-slate-200">Adicionar/Editar Livro</h3>
                     <form onsubmit="salvarLivro(event)" class="space-y-4">
                         <input type="hidden" id="livro-id">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -61,10 +70,7 @@
                             <input type="number" id="ano" placeholder="Ano" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                             <input type="text" id="isbn" placeholder="ISBN" required class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                         </div>
-                        <select id="disponivel" class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            <option value="true">Disponível</option>
-                            <option value="false">Emprestado</option>
-                        </select>
+                        <input type="number" id="quantidadeDisponivel" placeholder="Quantidade Disponível" required min="0" class="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                         <div class="flex space-x-4">
                             <button type="submit" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg">Salvar</button>
                             <button type="button" onclick="cancelarEdicao()" class="bg-gradient-to-r from-slate-500 to-slate-600 text-white px-6 py-3 rounded-lg hover:from-slate-600 hover:to-slate-700 transition-all duration-300 shadow-md hover:shadow-lg">Cancelar</button>
@@ -76,7 +82,7 @@
 
         <!-- Seção de Usuários -->
         <section id="usuarios" class="mb-12">
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-6 mb-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-3xl font-bold text-slate-800 flex items-center">
                         <svg class="w-8 h-8 mr-3 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
@@ -93,8 +99,8 @@
                 </div>
                 <button onclick="carregarUsuarios()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg mb-6">Carregar Usuários</button>
                 <div id="usuarios-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-                <div id="form-usuario" class="hidden mt-8 bg-slate-50 p-6 rounded-lg border-l-4 border-yellow-500">
-                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Adicionar/Editar Usuário</h3>
+                <div id="form-usuario" class="hidden mt-8 bg-slate-50 dark:bg-slate-600 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800 dark:text-slate-200">Adicionar/Editar Usuário</h3>
                     <form onsubmit="salvarUsuario(event)" class="space-y-4">
                         <input type="hidden" id="usuario-id">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -114,7 +120,7 @@
 
         <!-- Seção de Empréstimos -->
         <section id="emprestimos" class="mb-12">
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="bg-white dark:bg-slate-700 rounded-lg shadow-md p-6 mb-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-3xl font-bold text-slate-800 flex items-center">
                         <svg class="w-8 h-8 mr-3 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
@@ -131,8 +137,8 @@
                 </div>
                 <button onclick="carregarEmprestimos()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg mb-6">Carregar Empréstimos</button>
                 <div id="emprestimos-lista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-                <div id="form-emprestimo" class="hidden mt-8 bg-slate-50 p-6 rounded-lg border-l-4 border-yellow-500">
-                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Registrar Empréstimo</h3>
+                <div id="form-emprestimo" class="hidden mt-8 bg-slate-50 dark:bg-slate-600 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800 dark:text-slate-200">Registrar Empréstimo</h3>
                     <form onsubmit="salvarEmprestimo(event)" class="space-y-4">
                         <input type="hidden" id="emprestimo-id">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -159,15 +165,11 @@
     <footer class="bg-slate-900 text-white py-8 mt-12">
         <div class="container mx-auto px-4 text-center">
             <div class="flex items-center justify-center mb-4">
-                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
-                    <svg class="w-6 h-6 text-slate-900" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
+                <img src="images/senac-logo.png" alt="Senac Logo" class="w-10 h-10 object-contain mr-3" />
                 <h3 class="text-xl font-bold">Biblioteca Universitária</h3>
             </div>
             <p class="text-slate-300 mb-4">Sistema de Gerenciamento de Livros e Empréstimos</p>
-            <p class="text-sm text-slate-400">© 2023 Universidade. Todos os direitos reservados.</p>
+            <p class="text-sm text-slate-400">© 2025 Universidade.<br/>Criadores: Paulo, Vinicius, Nycollas.</p>
         </div>
     </footer>
 
@@ -180,12 +182,12 @@
             const livros = await response.json();
             const lista = document.getElementById('livros-lista');
             lista.innerHTML = livros.map(livro => `
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="font-bold">${livro.titulo}</h3>
-                    <p>Autor: ${livro.autor}</p>
-                    <p>Ano: ${livro.ano}</p>
-                    <p>ISBN: ${livro.isbn}</p>
-                    <p>Disponível: ${livro.disponivel ? 'Sim' : 'Não'}</p>
+                <div class="bg-white dark:bg-slate-700 p-4 rounded shadow">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200">${livro.titulo}</h3>
+                    <p class="text-slate-600 dark:text-slate-300">Autor: ${livro.autor}</p>
+                    <p class="text-slate-600 dark:text-slate-300">Ano: ${livro.ano}</p>
+                    <p class="text-slate-600 dark:text-slate-300">ISBN: ${livro.isbn}</p>
+                    <p class="text-slate-600 dark:text-slate-300">Quantidade Disponível: ${livro.quantidadeDisponivel}</p>
                     <button onclick="editarLivro(${livro.id})" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Editar</button>
                     <button onclick="deletarLivro(${livro.id})" class="bg-red-500 text-white px-2 py-1 rounded">Deletar</button>
                 </div>
@@ -205,7 +207,7 @@
                     document.getElementById('autor').value = livro.autor;
                     document.getElementById('ano').value = livro.ano;
                     document.getElementById('isbn').value = livro.isbn;
-                    document.getElementById('disponivel').value = livro.disponivel.toString();
+                    document.getElementById('quantidadeDisponivel').value = livro.quantidadeDisponivel;
                     mostrarFormLivro();
                 });
         }
@@ -213,27 +215,58 @@
         async function salvarLivro(event) {
             event.preventDefault();
             const id = document.getElementById('livro-id').value;
+            const anoValue = document.getElementById('ano').value;
+            const quantidadeValue = document.getElementById('quantidadeDisponivel').value;
+            const ano = parseInt(anoValue);
+            const quantidadeDisponivel = parseInt(quantidadeValue);
+
+            if (isNaN(ano) || isNaN(quantidadeDisponivel)) {
+                alert('Por favor, insira valores numéricos válidos para Ano e Quantidade Disponível.');
+                return;
+            }
+
             const livro = {
                 titulo: document.getElementById('titulo').value,
                 autor: document.getElementById('autor').value,
-                ano: parseInt(document.getElementById('ano').value),
+                ano: ano,
                 isbn: document.getElementById('isbn').value,
-                disponivel: document.getElementById('disponivel').value === 'true'
+                quantidadeDisponivel: quantidadeDisponivel
             };
+            console.log('Salvando livro:', livro); // Debug log
             const method = id ? 'PUT' : 'POST';
             const url = id ? `${API_BASE}/livros/${id}` : `${API_BASE}/livros`;
-            await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(livro)
-            });
-            cancelarEdicao();
-            carregarLivros();
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(livro)
+                });
+                if (response.ok) {
+                    cancelarEdicao();
+                    carregarLivros();
+                } else {
+                    const errorText = await response.text();
+                    alert('Erro ao salvar livro: ' + errorText);
+                    console.error('Erro na resposta:', response.status, errorText);
+                }
+            } catch (error) {
+                alert('Erro de conexão ao salvar livro.');
+                console.error('Erro:', error);
+            }
         }
 
         async function deletarLivro(id) {
-            await fetch(`${API_BASE}/livros/${id}`, { method: 'DELETE' });
-            carregarLivros();
+            try {
+                const response = await fetch(`${API_BASE}/livros/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    carregarLivros();
+                } else {
+                    alert('Erro ao deletar livro. Verifique se o livro não está emprestado.');
+                }
+            } catch (error) {
+                alert('Erro de conexão ao deletar livro.');
+                console.error('Erro:', error);
+            }
         }
 
         function cancelarEdicao() {
@@ -243,6 +276,7 @@
             document.getElementById('autor').value = '';
             document.getElementById('ano').value = '';
             document.getElementById('isbn').value = '';
+            document.getElementById('quantidadeDisponivel').value = '';
         }
 
         // Funções para Usuários (similar às de livros)
@@ -251,11 +285,11 @@
             const usuarios = await response.json();
             const lista = document.getElementById('usuarios-lista');
             lista.innerHTML = usuarios.map(usuario => `
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="font-bold">${usuario.nome}</h3>
-                    <p>Matrícula: ${usuario.matricula}</p>
-                    <p>Curso: ${usuario.curso}</p>
-                    <p>E-mail: ${usuario.email}</p>
+                <div class="bg-white dark:bg-slate-700 p-4 rounded shadow">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200">${usuario.nome}</h3>
+                    <p class="text-slate-600 dark:text-slate-300">Matrícula: ${usuario.matricula}</p>
+                    <p class="text-slate-600 dark:text-slate-300">Curso: ${usuario.curso}</p>
+                    <p class="text-slate-600 dark:text-slate-300">E-mail: ${usuario.email}</p>
                     <button onclick="editarUsuario(${usuario.id})" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Editar</button>
                     <button onclick="deletarUsuario(${usuario.id})" class="bg-red-500 text-white px-2 py-1 rounded">Deletar</button>
                 </div>
@@ -300,8 +334,17 @@
         }
 
         async function deletarUsuario(id) {
-            await fetch(`${API_BASE}/usuarios/${id}`, { method: 'DELETE' });
-            carregarUsuarios();
+            try {
+                const response = await fetch(`${API_BASE}/usuarios/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    carregarUsuarios();
+                } else {
+                    alert('Erro ao deletar usuário. Verifique se o usuário não possui empréstimos ativos.');
+                }
+            } catch (error) {
+                alert('Erro de conexão ao deletar usuário.');
+                console.error('Erro:', error);
+            }
         }
 
         function cancelarEdicaoUsuario() {
@@ -319,11 +362,13 @@
             const emprestimos = await response.json();
             const lista = document.getElementById('emprestimos-lista');
             lista.innerHTML = emprestimos.map(emprestimo => `
-                <div class="bg-white p-4 rounded shadow">
-                    <p>Usuário: ${emprestimo.usuario.nome}</p>
-                    <p>Livro: ${emprestimo.livro.titulo}</p>
-                    <p>Data Empréstimo: ${emprestimo.dataEmprestimo}</p>
-                    <p>Data Devolução: ${emprestimo.dataDevolucao || 'Não devolvido'}</p>
+                <div class="bg-white dark:bg-slate-700 p-4 rounded shadow">
+                    <p class="text-slate-800 dark:text-slate-200">Usuário: ${emprestimo.usuario.nome}</p>
+                    <p class="text-slate-800 dark:text-slate-200">Livro: ${emprestimo.livro.titulo}</p>
+                    <p class="text-slate-800 dark:text-slate-200">Data Empréstimo: ${emprestimo.dataEmprestimo}</p>
+                    <p class="text-slate-800 dark:text-slate-200">Data Devolução: ${emprestimo.dataDevolucao || 'Não devolvido'}</p>
+                    <p class="text-slate-800 dark:text-slate-200">Status: ${emprestimo.confirmado ? 'Confirmado' : 'Pendente'}</p>
+                    ${!emprestimo.confirmado ? `<button onclick="confirmarEmprestimo(${emprestimo.id})" class="bg-green-500 text-white px-2 py-1 rounded mr-2">Confirmar</button>` : ''}
                     <button onclick="editarEmprestimo(${emprestimo.id})" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Editar</button>
                     <button onclick="deletarEmprestimo(${emprestimo.id})" class="bg-red-500 text-white px-2 py-1 rounded">Deletar</button>
                 </div>
@@ -347,7 +392,7 @@
             const response = await fetch(`${API_BASE}/livros`);
             const livros = await response.json();
             const select = document.getElementById('livro-emprestimo');
-            select.innerHTML = '<option value="">Selecione Livro</option>' + livros.filter(l => l.disponivel).map(l => `<option value="${l.id}">${l.titulo}</option>`).join('');
+            select.innerHTML = '<option value="">Selecione Livro</option>' + livros.filter(l => l.quantidadeDisponivel > 0).map(l => `<option value="${l.id}">${l.titulo}</option>`).join('');
         }
 
         function editarEmprestimo(id) {
@@ -384,8 +429,42 @@
         }
 
         async function deletarEmprestimo(id) {
-            await fetch(`${API_BASE}/emprestimos/${id}`, { method: 'DELETE' });
-            carregarEmprestimos();
+            try {
+                const response = await fetch(`${API_BASE}/emprestimos/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    carregarEmprestimos();
+                } else {
+                    alert('Erro ao deletar empréstimo.');
+                }
+            } catch (error) {
+                alert('Erro de conexão ao deletar empréstimo.');
+                console.error('Erro:', error);
+            }
+        }
+
+        async function confirmarEmprestimo(id) {
+            try {
+                const response = await fetch(`${API_BASE}/emprestimos/${id}`);
+                if (!response.ok) {
+                    alert('Erro ao buscar empréstimo.');
+                    return;
+                }
+                const emprestimo = await response.json();
+                emprestimo.confirmado = true;
+                const updateResponse = await fetch(`${API_BASE}/emprestimos/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(emprestimo)
+                });
+                if (updateResponse.ok) {
+                    carregarEmprestimos();
+                } else {
+                    alert('Erro ao confirmar empréstimo.');
+                }
+            } catch (error) {
+                alert('Erro de conexão ao confirmar empréstimo.');
+                console.error('Erro:', error);
+            }
         }
 
         function cancelarEdicaoEmprestimo() {
@@ -395,6 +474,22 @@
             document.getElementById('livro-emprestimo').value = '';
             document.getElementById('data-emprestimo').value = '';
             document.getElementById('data-devolucao').value = '';
+        }
+
+        // Função para alternar tema
+        function toggleTheme() {
+            const html = document.documentElement;
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                html.classList.add('dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
         }
 
         // Inicializar

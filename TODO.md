@@ -1,16 +1,15 @@
-# TODO: Switch to PostgreSQL Database
+# TODO List for Library System Enhancements
 
-## Completed Tasks
-- [x] Updated `src/main/resources/application.properties` to use PostgreSQL configuration (with placeholders for connection details).
-- [x] Removed H2 dependency from `pom.xml` to avoid conflicts.
+## Backend Changes
+- [ ] Update Livro.java: Add int quantidadeDisponivel field
+- [ ] Update Emprestimo.java: Add boolean confirmado field
+- [ ] Update EmprestimoService.java: Modify salvar() to decrement quantity if >0, else throw error; modify deletar() to increment quantity only if confirmado
+- [ ] Update EmprestimoController.java: Add PUT /emprestimos/{id}/confirmar endpoint to set confirmado=true and update quantity
 
-## Pending Tasks
-- [ ] Replace placeholders in `application.properties` with actual PostgreSQL connection details (host, port, database name, username, password).
-- [ ] Ensure PostgreSQL server is running and the database exists.
-- [ ] Build and run the application to verify the connection works.
-- [ ] Test basic CRUD operations for Livro, Usuario, and Emprestimo entities.
-- [ ] Update any tests that rely on H2 to use PostgreSQL or mock the database.
+## Frontend Changes
+- [ ] Update index.html: Add quantity field to book form
+- [ ] Update index.html: Modify carregarLivrosParaSelect to filter books with quantity > 0
+- [ ] Update index.html: Add "Confirmar Devolução" button in emprestimos-lista for loans without confirmation
 
-## Notes
-- The `spring.jpa.hibernate.ddl-auto` is set to `update` to create/update tables on startup. Adjust if needed (e.g., to `validate` for production).
-- If you encounter connection issues, check PostgreSQL logs and ensure the database is accessible.
+## Testing
+- [ ] Run the application and test the new features

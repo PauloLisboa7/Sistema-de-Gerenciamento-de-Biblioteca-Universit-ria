@@ -28,22 +28,35 @@ public class EmprestimoService {
     }
 
     public Emprestimo salvar(Emprestimo emprestimo) {
-        // Marcar livro como indisponível ao emprestar
+        // Decrementar quantidade disponível ao emprestar
         Livro livro = emprestimo.getLivro();
-        livro.setDisponivel(false);
-        livroRepository.save(livro);
-        return emprestimoRepository.save(emprestimo);
+        if (livro.getQuantidadeDisponivel() > 0) {
+            livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() - 1);
+            livroRepository.save(livro);
+            return emprestimoRepository.save(emprestimo);
+        } else {
+            throw new RuntimeException("Livro não disponível em estoque");
+        }
     }
 
-    public void deletar(Long id) {
+    public Emprestimo confirmarDevolucao(Long id) {
         Optional<Emprestimo> emprestimoOpt = emprestimoRepository.findById(id);
         if (emprestimoOpt.isPresent()) {
             Emprestimo emprestimo = emprestimoOpt.get();
-            // Marcar livro como disponível ao devolver
-            Livro livro = emprestimo.getLivro();
-            livro.setDisponivel(true);
-            livroRepository.save(livro);
+            if (!emprestimo.isConfirmado()) {
+                emprestimo.setConfirmado(true);
+                // Incrementar quantidade disponível ao confirmar devolução
+                Livro livro = emprestimo.getLivro();
+                livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() + 1);
+                livroRepository.save(livro);
+                return emprestimoRepository.save(emprestimo);
+            }
         }
+        throw new RuntimeException("Empréstimo não encontrado ou já confirmado");
+    }
+
+    public void deletar(Long id) {
+        // Deletar empréstimo (cancelar sem devolver)
         emprestimoRepository.deleteById(id);
     }
 }

@@ -29,17 +29,27 @@ public class LivroController {
     }
 
     @PostMapping
-    public Livro criar(@RequestBody Livro livro) {
-        return livroService.salvar(livro);
+    public ResponseEntity<?> criar(@RequestBody Livro livro) {
+        try {
+            Livro salvo = livroService.salvar(livro);
+            return ResponseEntity.ok(salvo);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao salvar livro: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Livro> atualizar(@PathVariable Long id, @RequestBody Livro livro) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Livro livro) {
         if (!livroService.buscarPorId(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        livro.setId(id);
-        return ResponseEntity.ok(livroService.salvar(livro));
+        try {
+            livro.setId(id);
+            Livro salvo = livroService.salvar(livro);
+            return ResponseEntity.ok(salvo);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao atualizar livro: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

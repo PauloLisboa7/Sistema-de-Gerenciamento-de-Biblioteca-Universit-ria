@@ -26,6 +26,8 @@ public class Emprestimo {
     private LocalDate dataEmprestimo;
     private LocalDate dataDevolucao;
 
+    private boolean confirmado; // New field for return confirmation
+
     // Construtores
     public Emprestimo() {}
 
@@ -34,6 +36,7 @@ public class Emprestimo {
         this.livro = livro;
         this.dataEmprestimo = dataEmprestimo;
         this.dataDevolucao = dataDevolucao;
+        this.confirmado = false; // default false
     }
 
     // Getters e Setters
@@ -75,5 +78,13 @@ public class Emprestimo {
 
     public void setDataDevolucao(LocalDate dataDevolucao) {
         this.dataDevolucao = dataDevolucao;
+    }
+
+    public boolean isConfirmado() {
+        return confirmado;
+    }
+
+    public void setConfirmado(boolean confirmado) {
+        this.confirmado = confirmado;
     }
 }

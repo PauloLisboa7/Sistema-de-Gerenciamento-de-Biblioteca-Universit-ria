@@ -16,17 +16,17 @@ public class Livro {
     private String autor;
     private int ano;
     private String isbn;
-    private boolean disponivel;
+    private int quantidadeDisponivel;
 
     // Construtores
     public Livro() {}
 
-    public Livro(String titulo, String autor, int ano, String isbn, boolean disponivel) {
+    public Livro(String titulo, String autor, int ano, String isbn, int quantidadeDisponivel) {
         this.titulo = titulo;
         this.autor = autor;
         this.ano = ano;
         this.isbn = isbn;
-        this.disponivel = disponivel;
+        this.quantidadeDisponivel = quantidadeDisponivel;
     }
 
     // Getters e Setters
@@ -70,11 +70,14 @@ public class Livro {
         this.isbn = isbn;
     }
 
-    public boolean isDisponivel() {
-        return disponivel;
+    // Remove disponivel field and its getters/setters since we use quantidadeDisponivel
+
+    // Getters and setters for quantidadeDisponivel
+    public int getQuantidadeDisponivel() {
+        return quantidadeDisponivel;
     }
 
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
+    public void setQuantidadeDisponivel(int quantidadeDisponivel) {
+        this.quantidadeDisponivel = quantidadeDisponivel;
     }
 }

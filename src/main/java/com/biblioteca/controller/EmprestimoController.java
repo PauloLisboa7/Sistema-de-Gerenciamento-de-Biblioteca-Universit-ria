@@ -42,6 +42,16 @@ public class EmprestimoController {
         return ResponseEntity.ok(emprestimoService.salvar(emprestimo));
     }
 
+    @PutMapping("/{id}/confirmar")
+    public ResponseEntity<Emprestimo> confirmarDevolucao(@PathVariable Long id) {
+        try {
+            Emprestimo emprestimoConfirmado = emprestimoService.confirmarDevolucao(id);
+            return ResponseEntity.ok(emprestimoConfirmado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         if (!emprestimoService.buscarPorId(id).isPresent()) {
